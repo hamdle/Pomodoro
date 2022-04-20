@@ -1,21 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.IO;
 using System.Diagnostics;
-using System.Collections;
 
 
 namespace Pomo
@@ -27,15 +15,26 @@ namespace Pomo
     {
         private Boolean on = false;
         private int count = 0;
+        private int savedCount = 0;
         private readonly DispatcherTimer timer;
-        private Boolean flicker = false;
+        private readonly DispatcherTimer messageTimer;
+        private int messageFadeInSeconds = 6;
+        private int elapsedCount = 0;
 
         public MainWindow()
         {
             InitializeComponent();
+
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += timer_Tick;
+
+            messageTimer = new DispatcherTimer();
+            messageTimer.Interval = TimeSpan.FromSeconds(messageFadeInSeconds);
+            messageTimer.Tick += messageTimer_Tick;
+
+            btnSave.IsEnabled = false;
+            btnSave.Visibility = Visibility.Hidden;
         }
 
         private void timer_Tick(object? sender, EventArgs e)
@@ -43,10 +42,27 @@ namespace Pomo
             count++;
             TimeSpan timeSpan = TimeSpan.FromSeconds(count);
             lblTimer.Content = timeSpan.ToString();
+
+            if (btnSave.IsEnabled == false)
+            {
+                btnSave.IsEnabled = true;
+                btnSave.Visibility = Visibility.Visible;
+            }
+        }
+        private void messageTimer_Tick(object? sender, EventArgs e)
+        {
+            ShowMessage("");
+            messageTimer.Stop();
         }
 
         private void btnTimer_Click(object sender, RoutedEventArgs e)
         {
+            if (btnSave.IsEnabled == false)
+            {
+                btnSave.IsEnabled = true;
+                btnSave.Visibility = Visibility.Visible;
+            }
+
             if (on)
             {
                 // Turn off
@@ -60,30 +76,34 @@ namespace Pomo
                 timer.Start();
                 on = true;
                 btnTimer.Content = "Pause";
-                
             }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            string filename = @"C:\Users\EricMarty\timesheet.txt";
-            if (File.Exists(filename))
+            string filename = @"C:\Users\ermarty\timesheet.txt";
+            List<string> entries = ReadTimesheet(filename);
+
+            if (WriteTimesheet(filename, entries))
             {
-                ArrayList entries = ReadTimesheet(filename);
-                if (WriteTimesheet(filename, entries))
-                {
-                    lblSave.Content = "Saved " + DateTime.Now.ToString("hh:mm:ss tt");
-                }
-                else
-                {
-                    lblSave.Content = "Save failed";
-                }
+                btnSave.IsEnabled = false;
+                btnSave.Visibility = Visibility.Hidden;
+                ShowMessage("+" + TimeSpan.FromSeconds(elapsedCount));
+            }
+            else
+            {
+                ShowMessage("Save failed!");
             }
         }
 
-        private ArrayList ReadTimesheet(string filename)
+        private List<string> ReadTimesheet(string filename)
         {
-            ArrayList entries = new ArrayList();
+            List<string> entries = new List<string>();
+
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException(filename);
+            }
 
             try
             {
@@ -107,13 +127,21 @@ namespace Pomo
 
                             if (currentDate.Equals(entryDate))
                             {
-                                // Modify this entry
-                                Debug.WriteLine("Modify last line");
+                                // Modify todays entry.
+                                elapsedCount = count - savedCount;
+                                savedCount = count;
+                                TimeSpan timeSpan = TimeSpan.FromSeconds(elapsedCount);
+                                TimeSpan existingSpan = TimeSpan.Parse(line[1]);
+                                string newEntry = currentDate + ", " + (timeSpan + existingSpan);
+                                entries[entries.Count - 1] = newEntry;
                             }
                             else
                             {
-                                // Add a new line
-                                Debug.WriteLine("Add new line");
+                                // This is the first save for today so add a new line to the timesheet.
+                                TimeSpan timeSpan = TimeSpan.FromSeconds(count);
+                                savedCount = count;
+                                string newEntry = currentDate + ", " + timeSpan.ToString();
+                                entries.Add(newEntry);
                             }
                         }
                     }
@@ -121,16 +149,38 @@ namespace Pomo
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("An exception occurred while reading/writing the file.");
+                Debug.WriteLine("An exception occurred while reading the timesheet.");
                 Debug.WriteLine(ex.Message);
             }
 
             return entries;
         }
 
-        private bool WriteTimesheet(string filename, ArrayList entries)
+        private bool WriteTimesheet(string filename, List<String> entries)
         {
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException(filename);
+            }
+
+            try
+            {
+                File.WriteAllLines(filename, entries);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("An exception occurred while writing the timesheet.");
+                Debug.WriteLine(ex.Message);
+            }
+            
             return true;
+        }
+
+        private void ShowMessage(string message)
+        {
+            lblMessage.Content = message;
+
+            messageTimer.Start();
         }
     }
 }

@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pomo"
         mc:Ignorable="d"
+        Icon="C:\Users\EricMarty\source\repos\Pomo\Pomo\Icon1.ico"
         Title="Pomo" Height="450" Width="310">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="216">
         <Button x:Name="btnTimer" Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnTimer_Click" FontSize="18" Height="28" Width="99.5"/>
         <Label x:Name="lblTimer" Content="00:00:00" HorizontalAlignment="Center" Margin="0,94,0,0" VerticalAlignment="Top" FontSize="48" Height="74" Width="184" VerticalContentAlignment="Top"/>
-        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="0,340,0,10" Padding="1,1,1,7" Width="50" Height="24" Click="btnSave_Click"/>
-        <Label x:Name="lblSave" Content="Not saved" HorizontalAlignment="Right" Margin="0,340,0,0" VerticalAlignment="Top" Width="120" Height="24" FontWeight="Bold"/>
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Center" Margin="0,299,0,51" Padding="1,1,1,7" Width="50" Height="24" Click="btnSave_Click" Background="{x:Null}" Foreground="Black" BorderBrush="{x:Null}"/>
+        <Label x:Name="lblMessage" Content="" HorizontalAlignment="Center" Margin="0,328,0,0" VerticalAlignment="Top" Width="72" Height="27" FontWeight="Bold" Foreground="#FF0AC50A"/>
     </Grid>
 </Window>
