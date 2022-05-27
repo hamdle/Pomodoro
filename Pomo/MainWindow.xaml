@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Pomo"
         mc:Ignorable="d"
         Icon="C:\Users\EricMarty\source\repos\Pomo\Pomo\Icon1.ico"
-        Title="Pomo" Height="450" Width="310">
+        Title="Pomov1" Height="450" Width="310">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="216">
         <Button x:Name="btnTimer" Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnTimer_Click" FontSize="18" Height="28" Width="99.5"/>
         <Label x:Name="lblTimer" Content="00:00:00" HorizontalAlignment="Center" Margin="0,94,0,0" VerticalAlignment="Top" FontSize="48" Height="74" Width="184" VerticalContentAlignment="Top"/>

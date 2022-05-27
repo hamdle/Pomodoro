@@ -138,6 +138,7 @@ namespace Pomo
                             else
                             {
                                 // This is the first save for today so add a new line to the timesheet.
+                                elapsedCount = count - savedCount;
                                 TimeSpan timeSpan = TimeSpan.FromSeconds(count);
                                 savedCount = count;
                                 string newEntry = currentDate + ", " + timeSpan.ToString();
