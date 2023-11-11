@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using System.IO;
 using System.Diagnostics;
-
+using System.Configuration;
 
 namespace Pomo
 {
@@ -81,7 +81,12 @@ namespace Pomo
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            string filename = @"C:\Users\ermarty\timesheet.txt";
+            var filename = ConfigurationManager.AppSettings["file"];
+            if (filename == null)
+            {
+                ShowMessage("File not found!");
+                return;
+            }
             List<string> entries = ReadTimesheet(filename);
 
             if (WriteTimesheet(filename, entries))
