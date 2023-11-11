@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pomo"
         mc:Ignorable="d"
-        Icon="C:\Users\EricMarty\source\repos\Pomo\Pomo\Icon1.ico"
         Title="Pomov1" Height="450" Width="310">
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="216">
         <Button x:Name="btnTimer" Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnTimer_Click" FontSize="18" Height="28" Width="99.5"/>
